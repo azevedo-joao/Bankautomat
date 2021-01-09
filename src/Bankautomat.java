@@ -7,8 +7,6 @@ import java.util.Scanner;
 public class Bankautomat {
 
     //TODO vorherige Transaktionen anzeigen lassen
-    //TODO Applikation schließen
-    //TODO istAuszahlenMoeglich einbauen
 
     private double _saldo;
     private String _kundenname;
@@ -38,7 +36,6 @@ public class Bankautomat {
     public void start() {
 
         System.out.println("Willkommen in deinem Bankautomat!");
-        System.out.println("Wie können wir Ihnen weiter helfen? Drücken Sie bitte die zutreffende Ziffer");
         System.out.println("1: Kontostand anzeigen || 2: Geld einzahlen || 3: Geld auszahlen || 4: Zinsen Berechnen " +
                 "|| 5: Session beenden");
 
@@ -47,26 +44,50 @@ public class Bankautomat {
 
         do {
 
+            System.out.println("Wie können wir Ihnen weiter helfen? Drücken Sie bitte die zutreffende Ziffer");
             eingabe = scanner.nextInt();
+            double betrag;
 
             switch(eingabe) {
-
 
                 case 1:
                     zeigeKontostand();
                     break;
 
                 case 2:
-                    double betrag = scanner.nextDouble();
+                    System.out.println("Wie viel möchten Sie einzahlen?");
+                    betrag = scanner.nextDouble();
                     zahleEin(betrag);
                     break;
 
                 case 3:
+                    System.out.println("Wie viel möchten Sie auszahlen?");
                     betrag = scanner.nextDouble();
-                    zahleAus(betrag);
+
+                    if(_saldo < betrag) {
+                        System.out.println("Transaktion nicht möglich: Nicht genug Geld auf dem Konto");
+                        break;
+                    } else {
+                        zahleAus(betrag);
+                        break;
+                    }
+
+                case 4:
+                    System.out.println("Wie viel Prozent/Jahr möchten Sie zu Ihrem Kontostand berechnen?");
+                    betrag = scanner.nextDouble();
+                    int prozent = (int) betrag;
+                    berechneJahreszins(prozent);
+                    break;
+
+                case 5:
+                    System.out.println("Ihr Bankautomat dankt, bis zum nächsten Mal!");
+                    break;
+
+                default:
+                    System.out.println("Geben Sie bitte eine gültige Eingabe ein");
                     break;
             }
-        } while(istGueltigeEingabe(eingabe));
+        } while(eingabe != 5);
     }
 
     /**
@@ -133,10 +154,5 @@ public class Bankautomat {
         System.out.println("Kontonummer: " + _kontonummer);
         System.out.printf("Saldo: € %.2f\n", _saldo);
         System.out.println("======================");
-    }
-
-    private boolean istGueltigeEingabe(int eingabe) {
-
-        return eingabe >= 1 && eingabe <= 5;
     }
 }
